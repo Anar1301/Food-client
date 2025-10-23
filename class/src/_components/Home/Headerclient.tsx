@@ -27,36 +27,51 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-type ordercart = {
-  title: string;
-  price: number;
-};
+import { useEffect, useState } from "react";
+import { DialogClose, DialogTitle } from "@radix-ui/react-dialog";
+import { Badge } from "@/components/ui/badge";
+import { GrLocation } from "react-icons/gr";
 
 const Header = ({
-  ordercart,
+  setPlus,
   price,
   plus,
   handleonminus,
   handleonplus,
 }: {
-  ordercart: ordercart[];
+  setPlus: Function;
   price: number;
   plus: number;
   handleonminus: Function;
   handleonplus: Function;
 }) => {
-  const userEmail = localStorage.getItem("userEmail");
-
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [deliverAddress, setDeliverAddress] = useState<string>("");
+  const [address, setAddress] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
+
+  const handleOnAddress = () => {
+    localStorage.setItem("Address", deliverAddress);
+    alert("Address completed");
+    setOpen(!open);
+  };
 
   const onLogout = () => {
     localStorage.removeItem("userEmail");
     router.push("multitask");
   };
+  const RemoveAdrress = () => {
+    localStorage.removeItem("Address");
+  };
   const onLogin = () => {
     router.push("multitask");
   };
+  useEffect(() => {
+    setAddress(localStorage.getItem("Address")),
+      setUserEmail(localStorage.getItem("userEmail"));
+  }, []);
+
   return (
     <div className="w-[1440px] h-[70px] bg-[#18181B] flex items-center mx-auto justify-between">
       <div className="w-[1260px] mx-auto flex justify-between items-center">
@@ -71,32 +86,59 @@ const Header = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <div>
-                <input
-                  className="bg-white rounded-full text-black placeholder:text-black h-[40px]  placeholder:pl-4"
-                  placeholder="Add location"
-                />
-              </div>
+              {address ? (
+                <div className="w-[250px] h-[36px] rounded-full border-2 border-red-400 bg-white text-black flex gap-4 items-center justify-between">
+                  <div className="flex gap-2 ml-[12px] items-center ">
+                    <GrLocation color="red" className="h-4 w-4" />
+                    <div className="overflow-hidden">{address}</div>
+                  </div>
+
+                  <img
+                    src="/chevron.png"
+                    className="mr-4 "
+                    onClick={RemoveAdrress}
+                  />
+                </div>
+              ) : (
+                <div className="w-[250px] h-[36px] rounded-full border-2 border-red-400 bg-white text-black flex gap-4 items-center">
+                  <div className="flex ml-[12px] items-center ">
+                    <div>
+                      <GrLocation color="red" className="h-4 w-4" />
+                    </div>
+                    <div className="text-red-400 ">
+                      Delivery address:
+                      <span className="text-[#71717A]">Add address</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-[502px] max-h-[412px]">
-              <div className="font-bold text-[#09090B] text-[24px]">
-                Please write your delivery address!
-              </div>
+              <DialogTitle>
+                <div className="font-bold text-[#09090B] text-[24px]">
+                  Please write your delivery address!
+                </div>
+              </DialogTitle>
+
               <Textarea
                 placeholder="Please share your complete address"
                 className="h-[80px] mt-[24px]"
-              ></Textarea>
+                onChange={(e) => setDeliverAddress(e.target.value)}
+              />
               <DialogFooter className="flex justify-end gap-4 mt-[48px]">
-                <Button className="bg-white text-black border-2">Cancel</Button>
-                <Button>Deliver here</Button>
+                <DialogClose>
+                  <Badge className="bg-white text-black border-2">Cancel</Badge>
+                </DialogClose>
+
+                <Button onClick={() => handleOnAddress()}>Deliver here</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
           <VaulDrawer
-            ordercart={ordercart}
+            setPlus={setPlus}
             plus={plus}
             price={price}
             handleonminus={handleonminus}

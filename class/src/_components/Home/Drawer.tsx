@@ -6,25 +6,22 @@ import { Button } from "../ui/button";
 import Cardcomp from "./Cardcomp";
 import Orderhistory from "./Orderhistory";
 import { useState } from "react";
-type ordercart = {
-  title: string;
-  price: number;
-};
 
 export default function VaulDrawer({
-  ordercart,
+  setPlus,
   price,
   plus,
   handleonminus,
   handleonplus,
 }: {
-  ordercart: ordercart[];
+  setPlus: Function;
   price: number;
   plus: number;
   handleonminus: Function;
   handleonplus: Function;
 }) {
   const [active, setActive] = useState<boolean>(true);
+
   return (
     <Drawer.Root direction="right">
       <Drawer.Trigger className="relative flex h-10 flex-shrink-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-4 text-sm font-medium shadow-sm transition-all hover:bg-[#FAFAFA] dark:bg-[#161615] dark:hover:bg-[#1A1A19] dark:text-white">
@@ -39,6 +36,7 @@ export default function VaulDrawer({
             { "--initial-transform": "calc(100% + 8px)" } as React.CSSProperties
           }
         >
+          <Drawer.Title></Drawer.Title>
           <div className="h-[1024px] w-[550px] bg-[#404040] ">
             <div className="tabs tabs-box bg-[#404040] pb-10">
               <div className="bg-white rounded-full">
@@ -69,7 +67,7 @@ export default function VaulDrawer({
 
               <div className="tab-content">
                 <Cardcomp
-                  ordercart={ordercart}
+                  setPlus={setPlus}
                   price={price}
                   plus={plus}
                   handleonminus={handleonminus}

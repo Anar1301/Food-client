@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { LuSoup } from "react-icons/lu";
 import { CiStopwatch } from "react-icons/ci";
 import { CiMap } from "react-icons/ci";
+import Image from "next/image";
 
 const Orderhistory = () => {
   return (
@@ -80,14 +81,14 @@ const Orderhistory = () => {
           </div>
           <div className="bg-[#F4F4F5] h-[182px] w-[440px] mt-[20px] rounded-md flex flex-col items-center justify-center">
             <div>
-              <img src="/Logo.png"></img>
+              <Image src="/Logo.png" alt={""}></Image>
             </div>
             <div className="text-[16px] text-[#09090B] font-bold mt-2">
               No Orders Yet?
             </div>
             <div className="w-[343px] text-[#71717A] text-[12px] flex flex-col mt-5 items-center justify-center">
-              <div>🍕 "You haven't placed any orders yet. Start exploring</div>
-              <div> our menu and satisfy your cravings!"</div>
+              <div>🍕 You have not placed any orders yet. Start exploring</div>
+              <div> our menu and satisfy your cravings!</div>
             </div>
           </div>
         </div>

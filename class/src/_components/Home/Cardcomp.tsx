@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -14,20 +15,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
 import { useRouter } from "next/navigation";
-type ordercart = {
-  title: string;
-  price: number;
-};
+import { Cartfood, Dish, food2 } from "@/lib/type";
+import Image from "next/image";
 
 const Cardcomp = ({
-  ordercart,
-  price,
-  plus,
   handleonminus,
   handleonplus,
 }: {
-  ordercart: ordercart[];
-
+  setPlus: Function;
   price: number;
   plus: number;
   handleonminus: Function;
@@ -35,34 +30,49 @@ const Cardcomp = ({
 }) => {
   const router = useRouter();
   const userEmail = localStorage.getItem("userEmail");
+  const [Cartfood, setCartfood] = useState<Cartfood[]>([]);
+  const [shipping, SetShipping] = useState<number>(3000);
 
+  useEffect(() => {
+    const Cartfood: Cartfood[] = JSON.parse(
+      localStorage.getItem("Cartfood") ?? "[]"
+    );
+    setCartfood(Cartfood);
+    console.log({ Cartfood });
+  }, []);
   const goTologin = () => {
     router.push("/multitask");
   };
   const goTosignin = () => {
     router.push("/signup");
   };
+  const itemsTotal = Cartfood.reduce(
+    (sum, item) => sum + item.food.price * item.count,
+    0
+  );
+
   return (
     <div>
       <div className="h-10 bg-[#404040]"></div>
-      <div className="h-[600px] w-[471px] bg-white rounded-md ">
+      <div className="h-fit w-[471px] bg-white rounded-md ">
         <div className="pt-[16px] pl-[16px]">
           <div className="text-[20px] text-[#71717A] font-semibold">
             My cart
           </div>
-          {ordercart.map((cart) => (
-            <div className="flex  h-[120px] mt-5   ">
+          {Cartfood.map((cart, index) => (
+            <div className="flex  h-[120px] mt-5" key={index}>
               <div className="w-[124px] h-[120px] ">
-                <img
+                <Image
                   src="/food1.png"
                   className="w-[124px] h-[120px] object-cover rounded-md "
-                ></img>
+                  alt={""}
+                ></Image>
               </div>
               <div className="flex flex-col ml-2 w-[305px]">
                 <div className=" flex  ">
                   <div>
                     <div className="text-red-500 font-semibold text-[16px]">
-                      {cart.title}
+                      {cart.food.name}
                     </div>
                     <div className="text-[12px] mt-[12px] text-[#09090B] items-start">
                       Fluffy pancakes stacked with fruits, cream, Fluffy
@@ -88,7 +98,7 @@ const Cardcomp = ({
                       >
                         <MinusIcon />
                       </Button>
-                      <Button className="rounded-full">{plus}</Button>
+                      <Button className="rounded-full">{cart.count}</Button>
                       <Button
                         variant="outline"
                         size="icon"
@@ -100,7 +110,7 @@ const Cardcomp = ({
                   </div>
                   <div>
                     <div className="text-[#09090B] text-[24px] font-semibold">
-                      ${price}
+                      ${cart.food.price * cart.count}
                     </div>
                   </div>
                 </div>
@@ -114,7 +124,7 @@ const Cardcomp = ({
               Delivery location
             </div>
             <Textarea
-              className="h-[100px]  mt-[8px] w-[440px] "
+              className="h-fit  mt-[8px] w-[440px] "
               placeholder="Please share your  complete address"
             ></Textarea>
           </div>
@@ -128,16 +138,22 @@ const Cardcomp = ({
           </div>
           <div className="flex justify-between mt-[20px] ">
             <div className="text-[#71717A] text-[16px]">items</div>
-            <div className="pr-[16px] text-[#09090B] font-bold ">$25.98</div>
+            <div className="pr-[16px] text-[#09090B] font-bold ">
+              {itemsTotal}
+            </div>
           </div>
           <div className="flex justify-between mt-[20px]">
             <div className="text-[#71717A] text-[16px]">Shipping</div>
-            <div className="pr-[16px] text-[#09090B] font-bold  ">$0.99</div>
+            <div className="pr-[16px] text-[#09090B] font-bold  ">
+              {shipping}
+            </div>
           </div>
           <div className="w-[440px] border-t border-4 border-dashed mt-5"></div>
           <div className="flex justify-between mt-[20px]">
             <div className="text-[#71717A] text-[16px]">Total</div>
-            <div className="pr-[16px] text-[#09090B] font-bold  ">$26.97</div>
+            <div className="pr-[16px] text-[#09090B] font-bold  ">
+              {itemsTotal + shipping}
+            </div>
           </div>
         </div>
         <AlertDialog>
@@ -179,22 +195,23 @@ const Cardcomp = ({
                 </AlertDialogTitle>
               </AlertDialogHeader>
               <div className="flex justify-center items-center ">
-                <img className="h-[256px] w-[156px]" src="/suc.png"></img>
+                <Image
+                  className="h-[256px] w-[156px]"
+                  src="/suc.png"
+                  alt={""}
+                ></Image>
               </div>
               <AlertDialogFooter className="mt-10">
-                <AlertDialogCancel className="w-[188px] mr-20 ">
+                <AlertDialogCancel
+                  className="w-[188px] mr-20 "
+                  onClick={() => router.push("/")}
+                >
                   Back to home
                 </AlertDialogCancel>
               </AlertDialogFooter>
             </AlertDialogContent>
           )}
         </AlertDialog>
-        {/* <Button
-          className="w-[440px] rounded-full mt-[20px] ml-[16px]"
-          onClick={() => checklogin()}
-        >
-          Checkout
-        </Button> */}
       </div>
     </div>
   );

@@ -12,11 +12,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FaAngleLeft } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Multiformpassword from "./Multifrompassword";
 
 export function ProfileForm() {
@@ -45,22 +44,25 @@ export function ProfileForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit() {
     handleonlogin();
   }
 
   const handleonlogin = async () => {
-    const result = await fetch("http://localhost:4000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const result = await fetch(
+      "https://food-delivery-frontend-client-n86m.vercel.app/api/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      body: JSON.stringify({
-        email: form.getValues("Email"),
-        password: form.getValues("password"),
-      }),
-    });
+        body: JSON.stringify({
+          email: form.getValues("Email"),
+          password: form.getValues("password"),
+        }),
+      }
+    );
     const response = await result.json();
     console.log({ response });
     console.log({ result });
@@ -108,7 +110,7 @@ export function ProfileForm() {
                     className="w-full mt-[24px] bg-[#71717A]"
                     type="submit"
                   >
-                    Let's go
+                    Lets go
                   </Button>
                   <div className="text-[#71717A] text-[16px] mt-[24px] flex gap-4 items-center justify-center">
                     Already have an account ?
@@ -134,7 +136,7 @@ export function ProfileForm() {
       {multi === "login" && (
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((v) => onSubmit(v))}
+            onSubmit={form.handleSubmit(() => onSubmit())}
             className="space-y-8"
           >
             <FormField
@@ -192,7 +194,7 @@ export function ProfileForm() {
             </div>
 
             <Button className="w-full  bg-[#71717A] " type="submit">
-              Let's go
+              Lets go
             </Button>
 
             <div className="text-[#71717A] text-[16px]  flex gap-4 items-center justify-center">
@@ -259,7 +261,7 @@ export function ProfileForm() {
             <FormField
               control={form.control}
               name="Email"
-              render={({ field }) => (
+              render={({}) => (
                 <FormItem className="mt-[246px] w-[416px] flex flex-col gap-2">
                   <Button
                     className="w-[36px] h-[36px] bg-white text-black border-2"

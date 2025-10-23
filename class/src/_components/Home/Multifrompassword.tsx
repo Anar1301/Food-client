@@ -12,11 +12,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FaAngleLeft } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 const Multiformpassword = ({
@@ -26,8 +25,6 @@ const Multiformpassword = ({
   email: string;
   setMulti: any;
 }) => {
-  const router = useRouter();
-
   const [password, setPassword] = useState("password");
   function handleoneye() {
     if (password === "password") {
@@ -62,22 +59,25 @@ const Multiformpassword = ({
       confirmPassword: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit() {
     createUserHandler();
   }
   const createUserHandler = async () => {
     try {
-      const result = await fetch("http://localhost:4000/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const result = await fetch(
+        "https://food-delivery-frontend-client-n86m.vercel.app/api/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify({
-          email: email,
-          password: form?.getValues("password"),
-        }),
-      });
+          body: JSON.stringify({
+            email: email,
+            password: form?.getValues("password"),
+          }),
+        }
+      );
       const response = await result.json();
       if (response.success) {
         setMulti("login"), alert("Amjilttai burtguullee");
@@ -92,7 +92,7 @@ const Multiformpassword = ({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((v) => onSubmit(v))}
+        onSubmit={form.handleSubmit(() => onSubmit())}
         className="space-y-8"
       >
         <FormField
@@ -150,7 +150,7 @@ const Multiformpassword = ({
         </div>
 
         <Button className="w-full  bg-[#71717A] " type="submit">
-          Let's go
+          Lets go
         </Button>
         <div className="text-[#71717A] text-[16px]  flex gap-4 items-center justify-center">
           Already have an account ?
