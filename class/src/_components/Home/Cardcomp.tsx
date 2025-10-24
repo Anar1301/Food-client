@@ -15,28 +15,24 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
 import { useRouter } from "next/navigation";
-import { Cartfood, Dish, food2 } from "@/lib/type";
-import Image from "next/image";
+import { Cartfood } from "@/lib/type";
 
-const Cardcomp = ({
-  handleonminus,
-  handleonplus,
-}: {
-  setPlus: Function;
-  price: number;
-  plus: number;
-  handleonminus: Function;
-  handleonplus: Function;
-}) => {
+const Cardcomp = () => {
   const router = useRouter();
-  const userEmail = localStorage.getItem("userEmail");
+
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [Cartfood, setCartfood] = useState<Cartfood[]>([]);
   const [shipping, SetShipping] = useState<number>(3000);
+  const [plus, setPlus] = useState(1);
+  const [price, setPrice] = useState(0);
+  const [firstprice, Setfirstprice] = useState(0);
+  const [selectedFood, setSelectedFood] = useState<Cartfood[]>([]);
 
   useEffect(() => {
     const Cartfood: Cartfood[] = JSON.parse(
       localStorage.getItem("Cartfood") ?? "[]"
     );
+    setUserEmail(localStorage.getItem("userEmail"));
     setCartfood(Cartfood);
     console.log({ Cartfood });
   }, []);
@@ -51,6 +47,56 @@ const Cardcomp = ({
     0
   );
 
+  const PutDeliveryAddress = async () => {
+    if (userEmail) {
+      const result = await fetch("http://localhost:4000/api/orderfood", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          email: localStorage.getItem("userEmail"),
+          address: localStorage.getItem("Address"),
+          status: "PENDING",
+          totalprice: itemsTotal,
+          foodOrderitems: Cartfood,
+        }),
+      });
+      const response = await result.json();
+
+      if (response.success === true) {
+        localStorage.removeItem("Cartfood");
+        alert("Cartfood removed");
+      }
+    }
+  };
+
+  // useEffect(() => {
+  //   if (selectedFood) setPrice(selectedFood.food.price * plus);
+  // }, [plus]);
+
+  function handleonplus(cart: { count: number }) {
+    console.log("cart count ", cart.count);
+    return cart.count + 1;
+  }
+
+  function handleonminus(cart: Cartfood) {
+    Setfirstprice(cart.food.price);
+    if (plus === 1) {
+      setPrice(cart.food.price);
+      return;
+    }
+    setPlus(plus - 1);
+    setPrice(price - firstprice);
+  }
+  const DeleteSelectedfood = (cart: Cartfood) => {
+    const filtered: Cartfood[] = Cartfood.filter(
+      (car) => car.food._id !== cart.food._id
+    );
+
+    setCartfood(filtered);
+  };
   return (
     <div>
       <div className="h-10 bg-[#404040]"></div>
@@ -62,11 +108,10 @@ const Cardcomp = ({
           {Cartfood.map((cart, index) => (
             <div className="flex  h-[120px] mt-5" key={index}>
               <div className="w-[124px] h-[120px] ">
-                <Image
+                <img
                   src="/food1.png"
                   className="w-[124px] h-[120px] object-cover rounded-md "
-                  alt={""}
-                ></Image>
+                ></img>
               </div>
               <div className="flex flex-col ml-2 w-[305px]">
                 <div className=" flex  ">
@@ -80,7 +125,10 @@ const Cardcomp = ({
                     </div>
                   </div>
 
-                  <Button className="h-[36px] w-[36px] rounded-full border-2 border-red-400 bg-white text-red-400">
+                  <Button
+                    className="h-[36px] w-[36px] rounded-full border-2 border-red-400 bg-white text-red-400 "
+                    onClick={() => DeleteSelectedfood(cart)}
+                  >
                     X
                   </Button>
                 </div>
@@ -94,7 +142,7 @@ const Cardcomp = ({
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleonminus()}
+                        onClick={() => handleonminus(cart)}
                       >
                         <MinusIcon />
                       </Button>
@@ -102,7 +150,7 @@ const Cardcomp = ({
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleonplus()}
+                        onClick={() => handleonplus(cart)}
                       >
                         <PlusIcon />
                       </Button>
@@ -161,6 +209,7 @@ const Cardcomp = ({
             <Button
               className="w-[440px] rounded-full mt-[20px] ml-[16px] bg-foreground text-white"
               variant="outline"
+              onClick={PutDeliveryAddress}
             >
               Check out
             </Button>
@@ -195,11 +244,7 @@ const Cardcomp = ({
                 </AlertDialogTitle>
               </AlertDialogHeader>
               <div className="flex justify-center items-center ">
-                <Image
-                  className="h-[256px] w-[156px]"
-                  src="/suc.png"
-                  alt={""}
-                ></Image>
+                <img className="h-[256px] w-[156px]" src="/suc.png"></img>
               </div>
               <AlertDialogFooter className="mt-10">
                 <AlertDialogCancel
@@ -212,6 +257,12 @@ const Cardcomp = ({
             </AlertDialogContent>
           )}
         </AlertDialog>
+        {/* <Button
+          className="w-[440px] rounded-full mt-[20px] ml-[16px]"
+          onClick={() => checklogin()}
+        >
+          Checkout
+        </Button> */}
       </div>
     </div>
   );

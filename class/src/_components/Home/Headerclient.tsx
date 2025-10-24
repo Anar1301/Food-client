@@ -86,64 +86,60 @@ const Header = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              {address ? (
-                <div className="w-[250px] h-[36px] rounded-full border-2 border-red-400 bg-white text-black flex gap-4 items-center justify-between">
-                  <div className="flex gap-2 ml-[12px] items-center ">
-                    <GrLocation color="red" className="h-4 w-4" />
-                    <div className="overflow-hidden">{address}</div>
-                  </div>
-
-                  <img
-                    src="/chevron.png"
-                    className="mr-4 "
-                    onClick={RemoveAdrress}
-                  />
-                </div>
-              ) : (
-                <div className="w-[250px] h-[36px] rounded-full border-2 border-red-400 bg-white text-black flex gap-4 items-center">
-                  <div className="flex ml-[12px] items-center ">
-                    <div>
-                      <GrLocation color="red" className="h-4 w-4" />
-                    </div>
-                    <div className="text-red-400 ">
+          <div className="w-[250px] h-[36px] rounded-full border-2 border-red-400 bg-white text-black flex gap-4 items-center justify-between">
+            <div className="flex gap-2 ml-[12px] items-center ">
+              <GrLocation color="red" className="h-4 w-4" />
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  {address ? (
+                    <div className="truncate w-[165px]">{address}</div>
+                  ) : (
+                    <div className="text-red-400 w-[195px] truncate">
                       Delivery address:
-                      <span className="text-[#71717A]">Add address</span>
+                      <span className="text-[#71717A] text-ellipsis w-[76px] overflow-hidden">
+                        Add location
+                      </span>
                     </div>
-                  </div>
-                </div>
-              )}
-            </DialogTrigger>
+                  )}
+                </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[502px] max-h-[412px]">
-              <DialogTitle>
-                <div className="font-bold text-[#09090B] text-[24px]">
-                  Please write your delivery address!
-                </div>
-              </DialogTitle>
+                <DialogContent className="sm:max-w-[502px] max-h-[412px]">
+                  <DialogTitle>
+                    <div className="font-bold text-[#09090B] text-[24px]">
+                      Please write your delivery address!
+                    </div>
+                  </DialogTitle>
 
-              <Textarea
-                placeholder="Please share your complete address"
-                className="h-[80px] mt-[24px]"
-                onChange={(e) => setDeliverAddress(e.target.value)}
+                  <Textarea
+                    placeholder="Please share your complete address"
+                    className="h-[80px] mt-[24px]"
+                    onChange={(e) => setDeliverAddress(e.target.value)}
+                  />
+                  <DialogFooter className="flex justify-end gap-4 mt-[48px]">
+                    <DialogClose>
+                      <Badge className="bg-white text-black border-2">
+                        Cancel
+                      </Badge>
+                    </DialogClose>
+
+                    <Button onClick={() => handleOnAddress()}>
+                      Deliver here
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {address && (
+              <img
+                src="/chevron.png"
+                className="mr-4 "
+                onClick={RemoveAdrress}
               />
-              <DialogFooter className="flex justify-end gap-4 mt-[48px]">
-                <DialogClose>
-                  <Badge className="bg-white text-black border-2">Cancel</Badge>
-                </DialogClose>
+            )}
+          </div>
 
-                <Button onClick={() => handleOnAddress()}>Deliver here</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <VaulDrawer
-            setPlus={setPlus}
-            plus={plus}
-            price={price}
-            handleonminus={handleonminus}
-            handleonplus={handleonplus}
-          />
+          <VaulDrawer />
 
           <Popover>
             <PopoverTrigger>

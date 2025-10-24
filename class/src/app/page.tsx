@@ -4,7 +4,6 @@ import DishTocart from "@/_components/Home/DishTocart";
 import Footer from "@/_components/Home/Footer";
 import Header from "@/_components/Home/Headerclient";
 import { Category, Dish } from "@/lib/type";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const ClientHomepage = () => {
@@ -42,7 +41,7 @@ const ClientHomepage = () => {
     if (selectedFood) setPrice(selectedFood.price * plus);
   }, [plus]);
 
-  function handleonplus({}) {
+  function handleonplus() {
     setPlus(plus + 1);
   }
 
@@ -66,7 +65,7 @@ const ClientHomepage = () => {
         handleonplus={handleonplus}
       />
 
-      <img src="BG.svg" alt={""} />
+      <img src="BG.svg" />
 
       <div className="w-[1264px] mx-auto py-8">
         {categories.map((category) => {

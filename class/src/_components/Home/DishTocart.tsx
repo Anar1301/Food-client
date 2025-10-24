@@ -54,11 +54,11 @@ const DishTocart = ({
         <DialogContent className="sm:max-w-[820px] max-h-[412px]">
           <div className="flex ">
             <div className="w-[377px] h-[364px] ">
-              <Image
+              <img
                 src={food.image}
                 className="w-[377px] h-[377px] object-cover rounded-md "
                 alt={""}
-              ></Image>
+              ></img>
             </div>
             <div className="flex flex-col mx-[24px]">
               <DialogTitle>

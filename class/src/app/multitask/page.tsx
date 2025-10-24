@@ -6,7 +6,7 @@ const Multi = () => {
     <div className="flex w-[1440px] mx-auto gap-40 mt-50">
       <ProfileForm></ProfileForm>
       <div>
-        <Image src="/multi.png" alt={""}></Image>
+        <img src="/multi.png" alt={""}></img>
       </div>
     </div>
   );

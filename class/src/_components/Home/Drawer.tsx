@@ -5,27 +5,34 @@ import { Drawer } from "vaul";
 import { Button } from "../ui/button";
 import Cardcomp from "./Cardcomp";
 import Orderhistory from "./Orderhistory";
-import { useState } from "react";
-
-export default function VaulDrawer({
-  setPlus,
-  price,
-  plus,
-  handleonminus,
-  handleonplus,
-}: {
-  setPlus: Function;
+import { useEffect, useState } from "react";
+import { Cartfood } from "@/lib/type";
+import { Badge } from "@/components/ui/badge";
+type ordercart = {
+  title: string;
   price: number;
-  plus: number;
-  handleonminus: Function;
-  handleonplus: Function;
-}) {
+};
+
+export default function VaulDrawer() {
   const [active, setActive] = useState<boolean>(true);
+  const [Cartfood, setCartfood] = useState<Cartfood[]>([]);
+  useEffect(() => {
+    const Cartfood: Cartfood[] = JSON.parse(
+      localStorage.getItem("Cartfood") ?? "[]"
+    );
+    setCartfood(Cartfood);
+    console.log({ Cartfood });
+  }, []);
 
   return (
     <Drawer.Root direction="right">
       <Drawer.Trigger className="relative flex h-10 flex-shrink-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-4 text-sm font-medium shadow-sm transition-all hover:bg-[#FAFAFA] dark:bg-[#161615] dark:hover:bg-[#1A1A19] dark:text-white">
-        <FiShoppingCart />
+        <div className="relative w-[20px] h-[50px] flex justify-center items-center">
+          <FiShoppingCart height={36} width={36} />
+          <Badge className="absolute top-0.5 -right-3 bg-red-400 rounded-full h-5 w-5">
+            {Cartfood.length}
+          </Badge>
+        </div>
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40" />
@@ -66,13 +73,7 @@ export default function VaulDrawer({
               />
 
               <div className="tab-content">
-                <Cardcomp
-                  setPlus={setPlus}
-                  price={price}
-                  plus={plus}
-                  handleonminus={handleonminus}
-                  handleonplus={handleonplus}
-                />
+                <Cardcomp />
               </div>
 
               <input
